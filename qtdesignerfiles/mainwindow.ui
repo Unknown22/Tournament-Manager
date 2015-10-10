@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>739</width>
+    <height>587</height>
+   </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::NoContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Tournament Manager</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>ui_files/icons/cup.png</normaloff>ui_files/icons/cup.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>40</width>
+     <height>40</height>
+    </size>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNowy_turniej"/>
+   <addaction name="actionWczytaj"/>
+   <addaction name="actionZapisz"/>
+   <addaction name="separator"/>
+   <addaction name="actionUstawienia"/>
+   <addaction name="actionPomoc"/>
+  </widget>
+  <action name="actionUstawienia">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/settings3.png</normaloff>ui_files/icons/settings3.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ustawienia</string>
+   </property>
+  </action>
+  <action name="actionNowy_turniej">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/newfile.png</normaloff>ui_files/icons/newfile.png</iconset>
+   </property>
+   <property name="text">
+    <string>Nowy turniej</string>
+   </property>
+  </action>
+  <action name="actionZapisz">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/save2.png</normaloff>ui_files/icons/save2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zapisz</string>
+   </property>
+  </action>
+  <action name="actionWczytaj">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/load.png</normaloff>ui_files/icons/load.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wczytaj</string>
+   </property>
+  </action>
+  <action name="actionPomoc">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/help.png</normaloff>ui_files/icons/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pomoc</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
