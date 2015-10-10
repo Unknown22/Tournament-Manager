@@ -54,8 +54,10 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNowy_turniej"/>
-   <addaction name="actionWczytaj"/>
-   <addaction name="actionZapisz"/>
+   <addaction name="actionWczytaj_z_bazy_danych"/>
+   <addaction name="actionWczytaj_z_pliku"/>
+   <addaction name="actionZapisz_do_pliku"/>
+   <addaction name="actionZapisz_screenshot_drzewa_turniejowego"/>
    <addaction name="separator"/>
    <addaction name="actionUstawienia"/>
    <addaction name="actionPomoc"/>
@@ -78,24 +80,6 @@
     <string>Nowy turniej</string>
    </property>
   </action>
-  <action name="actionZapisz">
-   <property name="icon">
-    <iconset>
-     <normaloff>ui_files/icons/save2.png</normaloff>ui_files/icons/save2.png</iconset>
-   </property>
-   <property name="text">
-    <string>Zapisz</string>
-   </property>
-  </action>
-  <action name="actionWczytaj">
-   <property name="icon">
-    <iconset>
-     <normaloff>ui_files/icons/load.png</normaloff>ui_files/icons/load.png</iconset>
-   </property>
-   <property name="text">
-    <string>Wczytaj</string>
-   </property>
-  </action>
   <action name="actionPomoc">
    <property name="icon">
     <iconset>
@@ -103,6 +87,42 @@
    </property>
    <property name="text">
     <string>Pomoc</string>
+   </property>
+  </action>
+  <action name="actionWczytaj_z_pliku">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/load.png</normaloff>ui_files/icons/load.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wczytaj z pliku</string>
+   </property>
+  </action>
+  <action name="actionWczytaj_z_bazy_danych">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/database.png</normaloff>ui_files/icons/database.png</iconset>
+   </property>
+   <property name="text">
+    <string>Wczytaj z bazy danych</string>
+   </property>
+  </action>
+  <action name="actionZapisz_screenshot_drzewa_turniejowego">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/camera.png</normaloff>ui_files/icons/camera.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zapisz screenshot drzewa turniejowego</string>
+   </property>
+  </action>
+  <action name="actionZapisz_do_pliku">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/save2.png</normaloff>ui_files/icons/save2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zapisz do pliku</string>
    </property>
   </action>
  </widget>

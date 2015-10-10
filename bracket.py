@@ -1,5 +1,5 @@
 ﻿from PyQt4 import QtCore, QtGui, Qt
-from PyQt4.QtGui import QGroupBox, QMessageBox, QPushButton, QBoxLayout
+from PyQt4.QtGui import *
 
 class Bracket(object):
 
@@ -30,7 +30,7 @@ class Bracket(object):
             self.list_of_layouts_in_groupbox.append(layout)
             groupBox.setLayout(layout)
             self.list_of_groupbox.append(groupBox)
-            ui.ui.gridLayout.addWidget(groupBox, 0, x)
+            ui.ui.gridLayout_2.addWidget(groupBox, 0, x)
             
 
         self.add_teams_button()
