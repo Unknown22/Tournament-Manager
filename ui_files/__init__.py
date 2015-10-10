@@ -1,1 +1,2 @@
-from mainwindow import Ui_MainWindow
+﻿from mainwindow import Ui_MainWindow
+from bracket_widget import Ui_BracketWidget
