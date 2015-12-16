@@ -11,6 +11,7 @@ class Bracket(object):
         self.list_of_groupbox = []
         self.list_of_layouts_in_groupbox = []
         self.list_of_teams_in_groupbox = []
+        self.list_of_buttons = []
 
         if team_number != 0:
             result = team_number
@@ -38,5 +39,5 @@ class Bracket(object):
     def add_teams_button(self):
         for number_of_groupbox in range(self.number_of_groupbox):
             for team_number in range(self.list_of_teams_in_groupbox[number_of_groupbox]):
-                button = QPushButton("Test")
+                button = QPushButton("...")
                 self.list_of_layouts_in_groupbox[number_of_groupbox].addWidget(button, team_number, 0)

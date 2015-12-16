@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>680</width>
-    <height>680</height>
+    <width>380</width>
+    <height>380</height>
    </rect>
   </property>
   <property name="contextMenuPolicy">
@@ -40,9 +40,12 @@
    </property>
    <property name="iconSize">
     <size>
-     <width>40</width>
-     <height>40</height>
+     <width>20</width>
+     <height>20</height>
     </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <property name="floatable">
     <bool>false</bool>
@@ -81,6 +84,9 @@
    </property>
   </action>
   <action name="actionPomoc">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>ui_files/icons/help.png</normaloff>ui_files/icons/help.png</iconset>
