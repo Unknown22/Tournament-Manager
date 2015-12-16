@@ -67,7 +67,8 @@ class TournamentManager(QtGui.QMainWindow):
         self.bracket.init_bracket(self.bracket_widget, self.number_of_teams, self.lista_druzyn)
 
     def zrob_screen(self):
-        Save.take_screenshot(self.ui_bracket_widget)
+        save = Save()
+        save.take_screenshot(self.bracket_widget.ui)
 
     def otworz_ustawienia(self):
         self.ustawienia = UstawieniaWidget()

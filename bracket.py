@@ -101,7 +101,6 @@ class Bracket(QtGui.QWidget):
         random = randint(0, self.liczba_przyciskow_na_starcie-1)
 
         for nazwa, druzyna in self.lista_druzyn.items():
-            liczba_druzyn += 1
             while self.list_of_buttons[random].text() != "...":
                 random = randint(0, self.liczba_przyciskow_na_starcie-1)
             self.przypisz_druzyne(random, nazwa)
