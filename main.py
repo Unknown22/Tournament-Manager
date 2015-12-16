@@ -24,6 +24,9 @@ class TournamentManager(QtGui.QMainWindow):
 
         self.connect_signals()
         self.ui.actionZapisz_screenshot_drzewa_turniejowego.setEnabled(False)
+        self.ui.actionWczytaj_z_bazy_danych.setEnabled(False)
+        self.ui.actionWczytaj_z_pliku.setEnabled(False)
+        self.ui.actionZapisz_do_pliku.setEnabled(False)
 
         self.lista_druzyn = {}
 
@@ -78,6 +81,7 @@ class TournamentManager(QtGui.QMainWindow):
 
         QtCore.QObject.connect(self.druzyny.ui.pushButton_dodaj, QtCore.SIGNAL("clicked()"), self.dodaj_druzyne)
         QtCore.QObject.connect(self.druzyny.ui.pushButton_usun, QtCore.SIGNAL("clicked()"), self.usun_druzyne)
+        QtCore.QObject.connect(self.druzyny.ui.pushButton_losuj_drzewko, QtCore.SIGNAL("clicked()"), self.losuj_drzewko)
 
         self.odswiez_liste_druzyn()
 
@@ -103,6 +107,13 @@ class TournamentManager(QtGui.QMainWindow):
 
         for nazwa_druzyny, druzyna in self.lista_druzyn.items():
             self.druzyny.ui.listWidget.addItem(nazwa_druzyny)
+
+    def losuj_drzewko(self):
+        try:
+            if bool(self.lista_druzyn):
+                self.bracket.losuj_drzewko()
+        except:
+            error_window = QMessageBox.warning(self, "Brak drzewka", "Najpierw stworz nowe drzewko turniejowe.")
 
 def main():
     app = QtGui.QApplication(sys.argv)

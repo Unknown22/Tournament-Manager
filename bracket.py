@@ -2,6 +2,8 @@
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+from random import randint
+
 from elementsOfUi import *
 
 class Bracket(QtGui.QWidget):
@@ -42,12 +44,17 @@ class Bracket(QtGui.QWidget):
         self.connect_signals()
 
     def add_teams_button(self):
+        self.liczba_przyciskow_na_starcie = 0
         button_number = 0;
         for number_of_groupbox in range(self.number_of_groupbox):
             for team_number in range(self.list_of_teams_in_groupbox[number_of_groupbox]):
                 button = QPushButton("...")
                 self.list_of_layouts_in_groupbox[number_of_groupbox].addWidget(button, team_number, 0)
                 self.list_of_buttons[button_number] = button
+                if(number_of_groupbox != 0):
+                    button.setEnabled(False)
+                if(number_of_groupbox == 0):
+                    self.liczba_przyciskow_na_starcie += 1
                 button_number += 1
 
     def connect_signals(self):
@@ -65,11 +72,15 @@ class Bracket(QtGui.QWidget):
 
         self.okno_druzyny.show()
 
-    def przypisz_druzyne(self, numer):
-        nazwa_druzyny_do_przypisania = self.okno_druzyny.ui.comboBox.currentText()
+    def przypisz_druzyne(self, numer, nazwa=None):
+        if nazwa == None:
+            nazwa_druzyny_do_przypisania = self.okno_druzyny.ui.comboBox.currentText()
+        else:
+            nazwa_druzyny_do_przypisania = nazwa
         if nazwa_druzyny_do_przypisania != "":
             self.lista_druzyn_przypisana_do_przyciskow[numer] = self.lista_druzyn[nazwa_druzyny_do_przypisania]
-            self.odswiez_okno(numer)
+            if nazwa == None:
+                self.odswiez_okno(numer)
         else:
             error_window = QMessageBox.warning(self, "Brak druzyn", "Najpierw dodaj jakies druzyny.")     
 
@@ -81,4 +92,17 @@ class Bracket(QtGui.QWidget):
         for member in druzyna.zawodnicy:
             self.okno_druzyny.ui.listWidget.addItem(member)
 
+        self.odswiez_przyciski_na_drzewku(numer, druzyna)
+
+    def odswiez_przyciski_na_drzewku(self, numer, druzyna):
         self.list_of_buttons[numer].setText(druzyna.getNazwa())
+
+    def losuj_drzewko(self):
+        random = randint(0, self.liczba_przyciskow_na_starcie-1)
+
+        for nazwa, druzyna in self.lista_druzyn.items():
+            liczba_druzyn += 1
+            while self.list_of_buttons[random].text() != "...":
+                random = randint(0, self.liczba_przyciskow_na_starcie-1)
+            self.przypisz_druzyne(random, nazwa)
+            self.odswiez_przyciski_na_drzewku(random, druzyna)

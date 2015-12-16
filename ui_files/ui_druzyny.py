@@ -48,6 +48,9 @@ class Ui_druzynyForm(object):
         self.pushButton_dodaj = QtGui.QPushButton(druzynyForm)
         self.pushButton_dodaj.setObjectName(_fromUtf8("pushButton_dodaj"))
         self.gridLayout.addWidget(self.pushButton_dodaj, 1, 1, 1, 2)
+        self.pushButton_losuj_drzewko = QtGui.QPushButton(druzynyForm)
+        self.pushButton_losuj_drzewko.setObjectName(_fromUtf8("pushButton_losuj_drzewko"))
+        self.gridLayout.addWidget(self.pushButton_losuj_drzewko, 3, 1, 1, 2)
 
         self.retranslateUi(druzynyForm)
         QtCore.QMetaObject.connectSlotsByName(druzynyForm)
@@ -57,4 +60,5 @@ class Ui_druzynyForm(object):
         self.pushButton_usun.setText(_translate("druzynyForm", "Usuń", None))
         self.label.setText(_translate("druzynyForm", "Nazwa drużyny:", None))
         self.pushButton_dodaj.setText(_translate("druzynyForm", "Dodaj", None))
+        self.pushButton_losuj_drzewko.setText(_translate("druzynyForm", "Losuj drzewko", None))
 
