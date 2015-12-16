@@ -55,13 +55,13 @@ class Bracket(QtGui.QWidget):
             QtCore.QObject.connect(self.list_of_buttons[button_number], QtCore.SIGNAL("clicked()"), lambda button_number = button_number: self.otworz_okno_druzyny(button_number))
 
     def otworz_okno_druzyny(self, numer):
-        if numer in self.lista_druzyn_przypisana_do_przyciskow:
-            print self.lista_druzyn_przypisana_do_przyciskow[numer].getNazwa()
         self.okno_druzyny = OknoDruzyny()
+        if numer in self.lista_druzyn_przypisana_do_przyciskow:
+            self.odswiez_okno(numer)
         for team_name, team in self.lista_druzyn.items():
             self.okno_druzyny.ui.comboBox.addItem(team_name)
 
-        QtCore.QObject.connect(self.okno_druzyny.ui.pushButton, QtCore.SIGNAL("clicked()"), lambda number = numer: self.przypisz_druzyne(numer))
+        QtCore.QObject.connect(self.okno_druzyny.ui.pushButton, QtCore.SIGNAL("clicked()"), lambda numer = numer: self.przypisz_druzyne(numer))
 
         self.okno_druzyny.show()
 
@@ -69,7 +69,16 @@ class Bracket(QtGui.QWidget):
         nazwa_druzyny_do_przypisania = self.okno_druzyny.ui.comboBox.currentText()
         if nazwa_druzyny_do_przypisania != "":
             self.lista_druzyn_przypisana_do_przyciskow[numer] = self.lista_druzyn[nazwa_druzyny_do_przypisania]
+            self.odswiez_okno(numer)
         else:
-            error_window = QMessageBox.warning(self, "Brak druzyn", "Najpierw dodaj jakies druzyny.")
+            error_window = QMessageBox.warning(self, "Brak druzyn", "Najpierw dodaj jakies druzyny.")     
 
-        print self.lista_druzyn_przypisana_do_przyciskow[numer]
+    def odswiez_okno(self, numer):
+        druzyna = self.lista_druzyn_przypisana_do_przyciskow[numer]
+        self.okno_druzyny.ui.label_2.setText(druzyna.getNazwa())
+        
+        self.okno_druzyny.ui.listWidget.clear()
+        for member in druzyna.zawodnicy:
+            self.okno_druzyny.ui.listWidget.addItem(member)
+
+        self.list_of_buttons[numer].setText(druzyna.getNazwa())
