@@ -5,7 +5,7 @@ import sys
 from ui_files import Ui_MainWindow
 from bracket import Bracket
 from druzyna import Druzyna
-from elementsOfUi import BracketWidget, NowyTurniejWidget, DruzynyWidget, UstawieniaWidget
+from elementsOfUi import *
 from save import Save
 
 
@@ -17,12 +17,13 @@ class TournamentManager(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.bracket = Bracket()
+
         self.bracket_widget = BracketWidget()
         self.ui.horizontalLayout_2.addWidget(self.bracket_widget)
 
-        self.bracket = Bracket()
-
         self.connect_signals()
+        self.ui.actionZapisz_screenshot_drzewa_turniejowego.setEnabled(False)
 
         self.lista_druzyn = {}
 
@@ -39,6 +40,10 @@ class TournamentManager(QtGui.QMainWindow):
         self.nowy_turniej.show()
 
     def utworz_turniej(self):
+        self.ui.horizontalLayout_2.removeWidget(self.bracket_widget)
+        del self.bracket_widget
+        self.bracket_widget = BracketWidget()
+        self.ui.horizontalLayout_2.addWidget(self.bracket_widget)
         self.number_of_teams = None
         number = self.nowy_turniej.ui.lineEdit.text()
         if number != "" :
@@ -52,10 +57,11 @@ class TournamentManager(QtGui.QMainWindow):
         if self.number_of_teams != None:
             self.create_bracket()
             self.nowy_turniej.close()
+            self.ui.actionZapisz_screenshot_drzewa_turniejowego.setEnabled(True)
 
     def create_bracket(self):
-        self.ui_bracket_widget = self.bracket_widget.ui
-        self.bracket.init_bracket(self.bracket_widget, self.number_of_teams)
+        #self.ui_bracket_widget = self.bracket_widget.ui
+        self.bracket.init_bracket(self.bracket_widget, self.number_of_teams, self.lista_druzyn)
 
     def zrob_screen(self):
         Save.take_screenshot(self.ui_bracket_widget)

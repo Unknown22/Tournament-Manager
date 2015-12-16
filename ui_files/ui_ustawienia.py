@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_ustawieniaForm(object):
     def setupUi(self, ustawieniaForm):
         ustawieniaForm.setObjectName(_fromUtf8("ustawieniaForm"))
-        ustawieniaForm.resize(96, 76)
+        ustawieniaForm.resize(206, 76)
         self.gridLayout = QtGui.QGridLayout(ustawieniaForm)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
         self.pushButton = QtGui.QPushButton(ustawieniaForm)
