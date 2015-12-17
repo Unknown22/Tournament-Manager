@@ -51,8 +51,8 @@ class Bracket(QtGui.QWidget):
                 button = QPushButton("...")
                 self.list_of_layouts_in_groupbox[number_of_groupbox].addWidget(button, team_number, 0)
                 self.list_of_buttons[button_number] = button
-                if(number_of_groupbox != 0):
-                    button.setEnabled(False)
+                #if(number_of_groupbox != 0):
+                #    button.setEnabled(False)
                 if(number_of_groupbox == 0):
                     self.liczba_przyciskow_na_starcie += 1
                 button_number += 1

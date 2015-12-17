@@ -120,6 +120,10 @@ class TournamentManager(QtGui.QMainWindow):
 def main():
     app = QtGui.QApplication(sys.argv)
     tournament_manager = TournamentManager()
+    if (sys.argv > 1):
+        tournament_manager.number_of_teams = int(sys.argv[1])
+        tournament_manager.create_bracket()
+        tournament_manager.ui.actionZapisz_screenshot_drzewa_turniejowego.setEnabled(True)
     tournament_manager.show()
     app.exec_()
 
