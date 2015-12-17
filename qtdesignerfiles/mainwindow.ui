@@ -58,6 +58,7 @@
    </attribute>
    <addaction name="actionNowy_turniej"/>
    <addaction name="actionWczytaj_z_bazy_danych"/>
+   <addaction name="actionZapisz_do_bazy_danych"/>
    <addaction name="actionWczytaj_z_pliku"/>
    <addaction name="actionZapisz_do_pliku"/>
    <addaction name="actionZapisz_screenshot_drzewa_turniejowego"/>
@@ -129,6 +130,18 @@
    </property>
    <property name="text">
     <string>Zapisz do pliku</string>
+   </property>
+  </action>
+  <action name="actionZapisz_do_bazy_danych">
+   <property name="icon">
+    <iconset>
+     <normaloff>ui_files/icons/databaseupload.png</normaloff>ui_files/icons/databaseupload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zapisz do bazy danych</string>
+   </property>
+   <property name="toolTip">
+    <string>Zapisz do bazy danych</string>
    </property>
   </action>
  </widget>

@@ -27,6 +27,7 @@ class TournamentManager(QtGui.QMainWindow):
         self.ui.actionWczytaj_z_bazy_danych.setEnabled(False)
         self.ui.actionWczytaj_z_pliku.setEnabled(False)
         self.ui.actionZapisz_do_pliku.setEnabled(False)
+        self.ui.actionZapisz_do_bazy_danych.setEnabled(False)
 
         self.lista_druzyn = {}
 
