@@ -38,7 +38,7 @@ class Bracket(QtGui.QWidget):
             self.list_of_layouts_in_groupbox.append(layout)
             groupBox.setLayout(layout)
             self.list_of_groupbox.append(groupBox)
-            ui.ui.gridLayout_2.addWidget(groupBox, 0, x)
+            self.ui.ui.gridLayout_2.addWidget(groupBox, 0, x)
 
         self.add_teams_button()
         self.connect_signals()
