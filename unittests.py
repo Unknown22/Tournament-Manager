@@ -1,4 +1,4 @@
-import unittest
+﻿import unittest
 from zawodnik import Zawodnik
 from druzyna import Druzyna
 from bracket import Bracket
