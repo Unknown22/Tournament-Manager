@@ -23,6 +23,7 @@ class BazaMySQL(object):
             self.c.execute(rozkaz)
             self.con.commit()
         except:
+            #print rozkaz
             self.con.rollback()
     
     def executeScriptsFromFile(self, filename, plik_procedury):
@@ -68,9 +69,35 @@ class BazaMySQL(object):
         self.wykonaj_rozkaz(rozkaz)
 
     def dodaj_uzytkownik(self, id, nick, haslo, rodzaj):
-        rozkaz = "INSERT INTO `uzytkownik` (`Id_uzytkownika`, `Nick`, `Haslo`, `Rodzaj_konta`) VALUES ('%s', %s, %s, %s);" % (id, nick, haslo, rodzaj)
+        rozkaz = "INSERT INTO `uzytkownik` (`Id_uzytkownika`, `Nick`, `Haslo`, `Rodzaj_konta`) VALUES ('%s', '%s', '%s', '%s');" % (id, nick, haslo, rodzaj)
         self.wykonaj_rozkaz(rozkaz)
 
     def usun_uzytkownik(self, id):
         rozkaz = "DELETE FROM `uzytkownik` WHERE `uzytkownik`.`Id_uzytkownika` = %s;" % (id)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def dodaj_uzytkownik_turniej(self, id_turnieju, id_uzytkownika):
+        rozkaz = "INSERT INTO `uzytkownik-turniej` (`Id_turnieju`, `Id_uzytkownika`) VALUES ('%s', '%s');" % (id_turnieju, id_uzytkownika)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def dodaj_druzyna(self, id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju, logo = None):
+        if logo == None:
+            rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju) 
+        else:
+            rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '%s');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju, logo)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def usun_druzyna(self, id):
+        rozkaz = "DELETE FROM `druzyna` WHERE `druzyna`.`Id_druzyny` = %s;" % (id)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def dodaj_zawodnik(self, id_zawodnika, imie, nazwisko, pozycja, id_druzyny, zdjecie = None):
+        if zdjecie == None:
+            rozkaz = "INSERT INTO `zawodnik` (`Id_zawodnika`, `Imie`, `Nazwisko`, `Pozycja`, `Id_druzyny`, `Zdjecie`) VALUES ('%s', '%s', '%s', '%s', '%s', '');" % (id_zawodnika, imie, nazwisko, pozycja, id_druzyny)
+        else:
+            rozkaz = "INSERT INTO `zawodnik` (`Id_zawodnika`, `Imie`, `Nazwisko`, `Pozycja`, `Id_druzyny`, `Zdjecie`) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (id_zawodnika, imie, nazwisko, pozycja, id_druzyny, zdjecie)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def usun_zawodnik(self, id):
+        rozkaz = "DELETE FROM `zawodnik` WHERE `zawodnik`.`Id_zawodnika` = %s;" % (id)
         self.wykonaj_rozkaz(rozkaz)
