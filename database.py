@@ -158,9 +158,19 @@ class BazaMySQL(object):
             rozkaz = "INSERT INTO `zawodnik` (`Id_zawodnika`, `Imie`, `Nazwisko`, `Pozycja`, `Id_druzyny`, `Zdjecie`) VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (id_zawodnika, imie, nazwisko, pozycja, id_druzyny, zdjecie)
         self.wykonaj_rozkaz(rozkaz)
 
-    def usun_zawodnik(self, id):
-        rozkaz = "DELETE FROM `zawodnik` WHERE `zawodnik`.`Id_zawodnika` = %s;" % (id)
+    def usun_zawodnik(self, id_zawodnika):
+        rozkaz = "DELETE FROM `zawodnik` WHERE `zawodnik`.`Id_zawodnika` = '%s';" % (id_zawodnika)
         self.wykonaj_rozkaz(rozkaz)
+
+    def szukaj_nastepne_id_zawodnik(self):
+        rozkaz = "SELECT * FROM zawodnik"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def znajdz_id_druzyny_po_nazwie(self, nazwa, id_turnieju):
+        rozkaz = "SELECT Id_druzyny FROM druzyna WHERE Nazwa = '%s' AND Id_turnieju = '%s';" % (nazwa, id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
 
     def aktualizuj_statystyki_zawodnika(self, id_zawodnika, zdobyte, stracone):
         rozkaz = "CALL `update_player_statistics`('%s', '%s', '%s');" % (id_zawodnika, zdobyte, stracone)

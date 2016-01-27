@@ -6,6 +6,7 @@ import time
 from ui_files import Ui_MainWindow
 from bracket import Bracket
 from druzyna import Druzyna
+from zawodnik import Zawodnik
 from elementsOfUi import *
 from save import Save
 from database import BazaMySQL
@@ -80,7 +81,10 @@ class TournamentManager(QtGui.QMainWindow):
             self.baza.connect()
 
             spis_turniejow_w_bazie = self.baza.szukaj_nastepne_id_turnieju()
-            najwiekszy = spis_turniejow_w_bazie[0][0]
+            try:
+                najwiekszy = spis_turniejow_w_bazie[0][0]
+            except:
+                najwiekszy = 0
             for row in spis_turniejow_w_bazie:
                 if row[0] > najwiekszy:
                     najwiekszy = row[0]
@@ -96,7 +100,10 @@ class TournamentManager(QtGui.QMainWindow):
 
         
         spis_uzytkownikow_w_bazie = self.baza.szukaj_nastepne_id_uzytkownika()
-        najwiekszy = spis_uzytkownikow_w_bazie[0][0]
+        try:
+            najwiekszy = spis_uzytkownikow_w_bazie[0][0]
+        except:
+            najwiekszy = 0
         for row in spis_uzytkownikow_w_bazie:
             if row[0] > najwiekszy:
                 najwiekszy = row[0]
@@ -129,44 +136,67 @@ class TournamentManager(QtGui.QMainWindow):
         self.zawodnicy = ZawodnicyWidget()
 
         QtCore.QObject.connect(self.zawodnicy.ui.pushButton_dodaj, QtCore.SIGNAL("clicked()"), self.dodaj_zawodnika)
+        QtCore.QObject.connect(self.zawodnicy.ui.pushButton_usun, QtCore.SIGNAL("clicked()"), self.usun_zawodnika)
+
 
         self.odswiez_liste_zawodnikow()
 
         self.zawodnicy.show()
 
+    def usun_zawodnika(self):
+        zawodnik_do_usuniecia = str(self.zawodnicy.ui.listWidget.currentItem().text())
+        id_zawodnika = self.lista_zawodnikow[zawodnik_do_usuniecia].getId_zawodnika()
+        del self.lista_zawodnikow[zawodnik_do_usuniecia]
+
+        self.baza.usun_zawodnik(id_zawodnika)
+
+        self.odswiez_liste_zawodnikow()
+
     def odswiez_liste_zawodnikow(self):
         self.zawodnicy.ui.listWidget.clear()
 
         for nazwa_zawodnika, zawodnik in self.lista_zawodnikow.items():
-            self.zawodnicy.ui.comboBox.addItem(nazwa_zawodnika)
+            self.zawodnicy.ui.listWidget.addItem(zawodnik.getImie() + " " + zawodnik.getNazwisko() + " (" + zawodnik.getDruzyna() + ")")
+
+        self.zawodnicy.ui.comboBox.clear()
+
+        for nazwa_druzyny, druzyna in self.lista_druzyn.items():
+            self.zawodnicy.ui.comboBox.addItem(nazwa_druzyny)
 
     def dodaj_zawodnika(self):
-        imie = self.zawodnicy.ui.lineEdit.text()
-        nazwisko = self.zawodnicy.ui.lineEdit_2.text()
-        pozycja = self.zawodnicy.ui.lineEdit_3.text()
-        do_druzyny = self.zawodnicy.ui.comboBox.currentText()
-        if nazwa_druzyny != "":
-            nowa_druzyna = Druzyna(nazwa_druzyny)
-            self.lista_druzyn[nazwa_druzyny] = nowa_druzyna
-            self.odswiez_liste_druzyn()
-            self.druzyny.ui.lineEdit.clear()
-            ilosc_zawodnikow = self.druzyny.ui.lineEdit_2.text().toInt()[0]
-            self.druzyny.ui.lineEdit_2.clear()
+        imie = str(self.zawodnicy.ui.lineEdit.text())
+        nazwisko = str(self.zawodnicy.ui.lineEdit_2.text())
+        pozycja = str(self.zawodnicy.ui.lineEdit_3.text())
+        do_druzyny = str(self.zawodnicy.ui.comboBox.currentText())
+        if imie != "" and nazwisko != "" and pozycja != "" and do_druzyny != "":
+            spis_zawodnikow_w_bazie = self.baza.szukaj_nastepne_id_zawodnik()
+            try:
+                najwiekszy = spis_zawodnikow_w_bazie[0][0]
+            except:
+                najwiekszy = 0
 
-            spis_druzyn_w_bazie = self.baza.szukaj_nastepne_id_druzyna()
-            najwiekszy = spis_druzyn_w_bazie[0][0]
-            for row in spis_druzyn_w_bazie:
+            for row in spis_zawodnikow_w_bazie:
                 if row[0] > najwiekszy:
                     najwiekszy = row[0]
 
-            id_druzyny = najwiekszy + 1
-            print str(self.druzyny.ui.lineEdit_2.text())
+            id_zawodnika = najwiekszy + 1
+
+            nowy_zawodnik = Zawodnik(imie, nazwisko, pozycja, do_druzyny, id_zawodnika)
+            nazwa_do_slownika = imie +" "+ nazwisko +" ("+ do_druzyny +")"
+            self.lista_zawodnikow[nazwa_do_slownika] = nowy_zawodnik
+            self.odswiez_liste_zawodnikow()
+            self.zawodnicy.ui.lineEdit.clear()
+            self.zawodnicy.ui.lineEdit_2.clear()
+            self.zawodnicy.ui.lineEdit_3.clear()
             
             id_turnieju = self.id_turnieju
-            logo = None
-            self.baza.dodaj_druzyna(id_druzyny, nazwa_druzyny, ilosc_zawodnikow, id_turnieju, logo)
+            zdjecie = None
+
+            id_druzyny = self.baza.znajdz_id_druzyny_po_nazwie(do_druzyny, id_turnieju)[0][0]
+
+            self.baza.dodaj_zawodnik(id_zawodnika, imie, nazwisko, pozycja, id_druzyny, zdjecie)
         else:
-            error_window = QMessageBox.warning(self, "Error", "Nazwa druzyny nie moze byc pusta.")
+            error_window = QMessageBox.warning(self, "Error", "Uzupelnij wszystkie dane")
 
     def otworz_druzyny(self):
         self.druzyny = DruzynyWidget()
@@ -190,13 +220,15 @@ class TournamentManager(QtGui.QMainWindow):
             self.druzyny.ui.lineEdit_2.clear()
 
             spis_druzyn_w_bazie = self.baza.szukaj_nastepne_id_druzyna()
-            najwiekszy = spis_druzyn_w_bazie[0][0]
+            try:
+                najwiekszy = spis_druzyn_w_bazie[0][0]
+            except:
+                najwiekszy = 0
             for row in spis_druzyn_w_bazie:
                 if row[0] > najwiekszy:
                     najwiekszy = row[0]
 
             id_druzyny = najwiekszy + 1
-            print str(self.druzyny.ui.lineEdit_2.text())
             
             id_turnieju = self.id_turnieju
             logo = None
