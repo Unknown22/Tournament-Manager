@@ -14,6 +14,8 @@ class BazaMySQL(object):
         self.con = mdb.connect(self.adres, self.nazwa_uzytkownika, self.haslo, self.nazwa_bazy)
         self.c = self.con.cursor()
         self.executeScriptsFromFile(self.plik_init, self.plik_procedury)
+        self.dodaj_konto('administrator', '1')
+        self.dodaj_konto('user', '0')
 
     def disconnect(self):
         self.con.close()
@@ -25,6 +27,14 @@ class BazaMySQL(object):
         except:
             #print rozkaz
             self.con.rollback()
+
+    def wykonaj_rozkaz_i_zwroc(self, rozkaz):
+        try:
+            self.c.execute(rozkaz)
+            results = self.c.fetchall()
+            return results
+        except:
+            return None
     
     def executeScriptsFromFile(self, filename, plik_procedury):
         
@@ -60,6 +70,51 @@ class BazaMySQL(object):
         rozkaz = "DELETE FROM `turniej` WHERE `turniej`.`Id_turnieju` = %s;" % (id_turnieju)
         self.wykonaj_rozkaz(rozkaz)
 
+    def pokaz_turniej(self, id_turnieju):
+        rozkaz = "SELECT * FROM turniej WHERE Id_turnieju = '%s'" % (id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        wynik = []
+        for row in results:
+            id = row[0]
+            ilosc_druzyn = row[1]
+            czy_posiada_faze_grupowa = str(row[2])
+            data_rozpoczecia = row[3]
+            if czy_posiada_faze_grupowa == '\x00':
+                czy_posiada_faze_grupowa = False
+            if czy_posiada_faze_grupowa == '\x01':
+                czy_posiada_faze_grupowa = True
+            do_dodania = [id, ilosc_druzyn, czy_posiada_faze_grupowa, data_rozpoczecia]
+            wynik.append(do_dodania)
+        return wynik
+
+    def szukaj_nastepne_id_turnieju(self):
+        rozkaz = "SELECT * FROM turniej"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+            
+    def pokaz_uzytkownik(self, id_turnieju):
+        rozkaz = "SELECT uzytkownik.Id_uzytkownika, Nick, Haslo, uzytkownik.Rodzaj_konta, Uprawnienia_organizatora FROM uzytkownik JOIN konto ON uzytkownik.Rodzaj_konta = konto.Rodzaj_konta JOIN `uzytkownik-turniej` ON uzytkownik.Id_uzytkownika = `uzytkownik-turniej`.`Id_uzytkownika` WHERE `uzytkownik-turniej`.Id_turnieju = %s " % (id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        wynik = []
+        for row in results:
+            id = row[0]
+            nick = row[1]
+            haslo = row[2]
+            rodzaj_konta = row[3]
+            uprawnienia = row[4]
+            if uprawnienia == '\x00':
+                uprawnienia = False
+            if uprawnienia == '\x01':
+                uprawnienia = True
+            do_dodania = [id, nick, haslo, rodzaj_konta, uprawnienia]
+            wynik.append(do_dodania)
+        return wynik
+
+    def szukaj_nastepne_id_uzytkownika(self):
+        rozkaz = "SELECT * FROM uzytkownik"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
     def dodaj_konto(self, rodzaj, uprawnienia):
         rozkaz = "INSERT INTO `konto` (`Rodzaj_konta`, `Uprawnienia_organizatora`) VALUES ('%s', b'%s');" % (rodzaj, uprawnienia)
         self.wykonaj_rozkaz(rozkaz)
@@ -87,9 +142,14 @@ class BazaMySQL(object):
             rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '%s');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju, logo)
         self.wykonaj_rozkaz(rozkaz)
 
-    def usun_druzyna(self, id):
-        rozkaz = "DELETE FROM `druzyna` WHERE `druzyna`.`Id_druzyny` = %s;" % (id)
+    def usun_druzyna(self, nazwa, id_turnieju):
+        rozkaz = "DELETE FROM `druzyna` WHERE `druzyna`.`Nazwa` = '%s' AND `druzyna`.`Id_turnieju`=%s;" % (nazwa, id_turnieju)
         self.wykonaj_rozkaz(rozkaz)
+
+    def szukaj_nastepne_id_druzyna(self):
+        rozkaz = "SELECT * FROM druzyna"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
 
     def dodaj_zawodnik(self, id_zawodnika, imie, nazwisko, pozycja, id_druzyny, zdjecie = None):
         if zdjecie == None:
@@ -100,4 +160,12 @@ class BazaMySQL(object):
 
     def usun_zawodnik(self, id):
         rozkaz = "DELETE FROM `zawodnik` WHERE `zawodnik`.`Id_zawodnika` = %s;" % (id)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def aktualizuj_statystyki_zawodnika(self, id_zawodnika, zdobyte, stracone):
+        rozkaz = "CALL `update_player_statistics`('%s', '%s', '%s');" % (id_zawodnika, zdobyte, stracone)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def aktualizuj_statystyki_druzyny(self, id_druzyny, czy_wygrana, zdobyte, stracone):
+        rozkaz = "CALL `update_team_statistics`('%s', '%s', '%s', '%s');" % (id_druzyny, czy_wygrana, zdobyte, stracone)
         self.wykonaj_rozkaz(rozkaz)

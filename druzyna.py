@@ -7,8 +7,8 @@
     def getNazwa(self):
         return self.nazwa
 
-    def dodajZawodnika():
+    def dodajZawodnika(self, zawodnik):
         pass
 
-    def usunZawodnika():
+    def usunZawodnika(self, zawodnik):
         pass

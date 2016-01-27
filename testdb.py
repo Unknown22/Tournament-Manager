@@ -8,22 +8,27 @@ def main():
     dbMySQL.dodaj_turniej('1', '2', '1', '2016-02-15')
     #dbMySQL.usun_turniej('1')
 
-    dbMySQL.dodaj_konto('administrator', '1')
-    dbMySQL.dodaj_konto('user', '0')
+    #dbMySQL.dodaj_konto('administrator', '1')
+    #dbMySQL.dodaj_konto('user', '0')
 
     #dbMySQL.usun_konto('administrator')
     #dbMySQL.usun_konto('user')
 
-    dbMySQL.dodaj_uzytkownik('1', 'Marcin', 'pass', 'administrator')
+    #dbMySQL.dodaj_uzytkownik('1', 'Marcin', 'pass', 'administrator')
     #dbMySQL.usun_uzytkownik('1')
 
-    #dbMySQL.dodaj_uzytkownik_turniej('1', '1')
+    dbMySQL.dodaj_uzytkownik_turniej('1', '1')
     
     #dbMySQL.usun_druzyna('1')
-    dbMySQL.dodaj_druzyna('1', 'Team1', '5', '1')
+    #dbMySQL.dodaj_druzyna('1', 'Team1', '5', '1')
 
-    dbMySQL.usun_zawodnik('1')
-    dbMySQL.dodaj_zawodnik('1', 'Imie', 'Nazwisko', 'Mid', '1')
+    #dbMySQL.usun_zawodnik('1')
+    #dbMySQL.dodaj_zawodnik('1', 'Imie', 'Nazwisko', 'Mid', '1')
+
+    #dbMySQL.aktualizuj_statystyki_zawodnika('1', '2', '1')
+    #dbMySQL.aktualizuj_statystyki_druzyny('1', '1', '6', '1')
+
+    dbMySQL.pokaz_turniej(2)
 
     #dbMySQL.disconnect()
 

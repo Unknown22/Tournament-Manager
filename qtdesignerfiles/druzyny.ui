@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>375</width>
     <height>194</height>
    </rect>
   </property>
@@ -14,7 +14,14 @@
    <string>Drużyny</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" rowspan="4">
+   <item row="5" column="0">
+    <widget class="QPushButton" name="pushButton_usun">
+     <property name="text">
+      <string>Usuń</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="5">
     <widget class="QListWidget" name="listWidget">
      <property name="minimumSize">
       <size>
@@ -24,37 +31,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="pushButton_usun">
-     <property name="text">
-      <string>Usuń</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Nazwa drużyny:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLineEdit" name="lineEdit"/>
-   </item>
-   <item row="5" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="2">
+   <item row="3" column="2">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -67,19 +44,52 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="1" colspan="2">
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEdit"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Nazwa drużyny:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
     <widget class="QPushButton" name="pushButton_dodaj">
      <property name="text">
       <string>Dodaj</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
+   <item row="6" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="1" colspan="2">
     <widget class="QPushButton" name="pushButton_losuj_drzewko">
      <property name="text">
       <string>Losuj drzewko</string>
      </property>
     </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Ilość zawodników:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEdit_2"/>
    </item>
   </layout>
  </widget>

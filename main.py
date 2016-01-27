@@ -1,12 +1,14 @@
 ﻿from PyQt4 import QtCore, QtGui, Qt
 from PyQt4.QtGui import *
 import sys
+import time
 
 from ui_files import Ui_MainWindow
 from bracket import Bracket
 from druzyna import Druzyna
 from elementsOfUi import *
 from save import Save
+from database import BazaMySQL
 
 
 
@@ -29,7 +31,10 @@ class TournamentManager(QtGui.QMainWindow):
         self.ui.actionZapisz_do_pliku.setEnabled(False)
         self.ui.actionZapisz_do_bazy_danych.setEnabled(False)
 
+        self.typ_bazy = ""
+
         self.lista_druzyn = {}
+        self.lista_zawodnikow = {}
 
     def connect_signals(self):
         QtCore.QObject.connect(self.ui.actionZapisz_screenshot_drzewa_turniejowego, QtCore.SIGNAL("triggered()"), self.zrob_screen)
@@ -40,6 +45,7 @@ class TournamentManager(QtGui.QMainWindow):
         self.nowy_turniej = NowyTurniejWidget()
 
         QtCore.QObject.connect(self.nowy_turniej.ui.pushButton, QtCore.SIGNAL("clicked()"), self.utworz_turniej)
+
 
         self.nowy_turniej.show()
 
@@ -63,6 +69,46 @@ class TournamentManager(QtGui.QMainWindow):
             self.nowy_turniej.close()
             self.ui.actionZapisz_screenshot_drzewa_turniejowego.setEnabled(True)
 
+        #Baza
+
+        if self.nowy_turniej.ui.radioButton_3.isChecked():
+            adres = str(self.nowy_turniej.ui.lineEdit_2.text())
+            nazwa_uzytkownika = str(self.nowy_turniej.ui.lineEdit_3.text())
+            haslo = str(self.nowy_turniej.ui.lineEdit_4.text())
+            nazwa_bazy = str(self.nowy_turniej.ui.lineEdit_5.text())
+            self.baza = BazaMySQL(adres, nazwa_uzytkownika, haslo, nazwa_bazy, "tournament_manager_baza_init.sql", "procedury.sql")
+            self.baza.connect()
+
+            spis_turniejow_w_bazie = self.baza.szukaj_nastepne_id_turnieju()
+            najwiekszy = spis_turniejow_w_bazie[0][0]
+            for row in spis_turniejow_w_bazie:
+                if row[0] > najwiekszy:
+                    najwiekszy = row[0]
+
+            self.id_turnieju = najwiekszy + 1
+            ilosc_druzyn = self.number_of_teams
+            if self.nowy_turniej.ui.radioButton.isChecked():
+                czy_posiada_faze_grupowa = 1
+            if self.nowy_turniej.ui.radioButton_2.isChecked():
+                czy_posiada_faze_grupowa = 0
+            data_rozpoczecia = time.strftime("%Y-%m-%d")
+            self.baza.dodaj_turniej(self.id_turnieju, ilosc_druzyn, czy_posiada_faze_grupowa, data_rozpoczecia)
+
+        
+        spis_uzytkownikow_w_bazie = self.baza.szukaj_nastepne_id_uzytkownika()
+        najwiekszy = spis_uzytkownikow_w_bazie[0][0]
+        for row in spis_uzytkownikow_w_bazie:
+            if row[0] > najwiekszy:
+                najwiekszy = row[0]
+
+        id = najwiekszy + 1
+        nick = str(self.nowy_turniej.ui.lineEdit_6.text())
+        haslo = str(self.nowy_turniej.ui.lineEdit_7.text())
+        rodzaj = "administrator"
+        self.baza.dodaj_uzytkownik(id, nick, haslo, rodzaj)
+
+        self.baza.dodaj_uzytkownik_turniej(self.id_turnieju, id)
+
     def create_bracket(self):
         #self.ui_bracket_widget = self.bracket_widget.ui
         self.bracket.init_bracket(self.bracket_widget, self.number_of_teams, self.lista_druzyn)
@@ -75,8 +121,52 @@ class TournamentManager(QtGui.QMainWindow):
         self.ustawienia = UstawieniaWidget()
         
         QtCore.QObject.connect(self.ustawienia.ui.pushButton, QtCore.SIGNAL("clicked()"), self.otworz_druzyny)
+        QtCore.QObject.connect(self.ustawienia.ui.pushButton_2, QtCore.SIGNAL("clicked()"), self.otworz_zawodnicy)
 
         self.ustawienia.show()
+
+    def otworz_zawodnicy(self):
+        self.zawodnicy = ZawodnicyWidget()
+
+        QtCore.QObject.connect(self.zawodnicy.ui.pushButton_dodaj, QtCore.SIGNAL("clicked()"), self.dodaj_zawodnika)
+
+        self.odswiez_liste_zawodnikow()
+
+        self.zawodnicy.show()
+
+    def odswiez_liste_zawodnikow(self):
+        self.zawodnicy.ui.listWidget.clear()
+
+        for nazwa_zawodnika, zawodnik in self.lista_zawodnikow.items():
+            self.zawodnicy.ui.comboBox.addItem(nazwa_zawodnika)
+
+    def dodaj_zawodnika(self):
+        imie = self.zawodnicy.ui.lineEdit.text()
+        nazwisko = self.zawodnicy.ui.lineEdit_2.text()
+        pozycja = self.zawodnicy.ui.lineEdit_3.text()
+        do_druzyny = self.zawodnicy.ui.comboBox.currentText()
+        if nazwa_druzyny != "":
+            nowa_druzyna = Druzyna(nazwa_druzyny)
+            self.lista_druzyn[nazwa_druzyny] = nowa_druzyna
+            self.odswiez_liste_druzyn()
+            self.druzyny.ui.lineEdit.clear()
+            ilosc_zawodnikow = self.druzyny.ui.lineEdit_2.text().toInt()[0]
+            self.druzyny.ui.lineEdit_2.clear()
+
+            spis_druzyn_w_bazie = self.baza.szukaj_nastepne_id_druzyna()
+            najwiekszy = spis_druzyn_w_bazie[0][0]
+            for row in spis_druzyn_w_bazie:
+                if row[0] > najwiekszy:
+                    najwiekszy = row[0]
+
+            id_druzyny = najwiekszy + 1
+            print str(self.druzyny.ui.lineEdit_2.text())
+            
+            id_turnieju = self.id_turnieju
+            logo = None
+            self.baza.dodaj_druzyna(id_druzyny, nazwa_druzyny, ilosc_zawodnikow, id_turnieju, logo)
+        else:
+            error_window = QMessageBox.warning(self, "Error", "Nazwa druzyny nie moze byc pusta.")
 
     def otworz_druzyny(self):
         self.druzyny = DruzynyWidget()
@@ -96,12 +186,30 @@ class TournamentManager(QtGui.QMainWindow):
             self.lista_druzyn[nazwa_druzyny] = nowa_druzyna
             self.odswiez_liste_druzyn()
             self.druzyny.ui.lineEdit.clear()
+            ilosc_zawodnikow = self.druzyny.ui.lineEdit_2.text().toInt()[0]
+            self.druzyny.ui.lineEdit_2.clear()
+
+            spis_druzyn_w_bazie = self.baza.szukaj_nastepne_id_druzyna()
+            najwiekszy = spis_druzyn_w_bazie[0][0]
+            for row in spis_druzyn_w_bazie:
+                if row[0] > najwiekszy:
+                    najwiekszy = row[0]
+
+            id_druzyny = najwiekszy + 1
+            print str(self.druzyny.ui.lineEdit_2.text())
+            
+            id_turnieju = self.id_turnieju
+            logo = None
+            self.baza.dodaj_druzyna(id_druzyny, nazwa_druzyny, ilosc_zawodnikow, id_turnieju, logo)
         else:
             error_window = QMessageBox.warning(self, "Error", "Nazwa druzyny nie moze byc pusta.")
 
     def usun_druzyne(self):
         druzyna_do_usuniecia = self.druzyny.ui.listWidget.currentItem().text()
         del self.lista_druzyn[druzyna_do_usuniecia]
+
+        self.baza.usun_druzyna(druzyna_do_usuniecia, self.id_turnieju)
+
         self.odswiez_liste_druzyn()
 
     def odswiez_liste_druzyn(self):
