@@ -58,9 +58,6 @@
    </attribute>
    <addaction name="actionNowy_turniej"/>
    <addaction name="actionWczytaj_z_bazy_danych"/>
-   <addaction name="actionZapisz_do_bazy_danych"/>
-   <addaction name="actionWczytaj_z_pliku"/>
-   <addaction name="actionZapisz_do_pliku"/>
    <addaction name="actionZapisz_screenshot_drzewa_turniejowego"/>
    <addaction name="separator"/>
    <addaction name="actionUstawienia"/>

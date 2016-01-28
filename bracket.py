@@ -58,19 +58,53 @@ class Bracket(QtGui.QWidget):
                 button_number += 1
 
     def connect_signals(self):
+        QtCore.QObject.connect(self.ui.ui.pushButton, QtCore.SIGNAL("clicked()"), self.otworz_nastepny_mecz)
         for button_number, button in self.list_of_buttons.items():
             QtCore.QObject.connect(self.list_of_buttons[button_number], QtCore.SIGNAL("clicked()"), lambda button_number = button_number: self.otworz_okno_druzyny(button_number))
+
+    def otworz_nastepny_mecz(self):
+        self.nastepny_mecz = NastepnyMeczWidget()
+
+        self.nastepny_mecz.show()
+
+    def przekaz_id_turnieju(self, id):
+        self.id_turnieju = id
 
     def otworz_okno_druzyny(self, numer):
         self.okno_druzyny = OknoDruzyny()
         if numer in self.lista_druzyn_przypisana_do_przyciskow:
             self.odswiez_okno(numer)
+        else:
+            self.okno_druzyny.ui.label_liczba_wygranych.setText("")
+            self.okno_druzyny.ui.label_liczba_przegranych.setText("")
+            self.okno_druzyny.ui.label_zdobyte_punkty.setText("")
+            self.okno_druzyny.ui.label_stracone_punkty.setText("")
+            self.okno_druzyny.ui.label_zdobyte_punkty_zawodnik.setText("")
+            self.okno_druzyny.ui.label_stracone_punkty_zawodnik.setText("")
+            self.okno_druzyny.ui.label_rozegrane_mecze.setText("")
+
         for team_name, team in self.lista_druzyn.items():
             self.okno_druzyny.ui.comboBox.addItem(team_name)
 
         QtCore.QObject.connect(self.okno_druzyny.ui.pushButton, QtCore.SIGNAL("clicked()"), lambda numer = numer: self.przypisz_druzyne(numer))
+        self.okno_druzyny.ui.listWidget.currentItemChanged.connect(self.odswiez_staty_zawodnika)
+        
 
         self.okno_druzyny.show()
+
+    def odswiez_staty_zawodnika(self):
+        zawodnik = self.okno_druzyny.ui.listWidget.currentItem().text()
+
+        for member in self.druzyna_do_odswiezania_statow_zawodnikow.zawodnicy:
+            do_sprawdzenia = member.getImie() + " " + member.getNazwisko()
+            if do_sprawdzenia == zawodnik:
+                id_zawodnika_do_odswiezenia_statow = member.getId_zawodnika()
+
+        statystyki_zawodnika = self.baza.pobierz_statystyki_zawodnika(id_zawodnika_do_odswiezenia_statow)
+
+        self.okno_druzyny.ui.label_zdobyte_punkty_zawodnik.setText(str(statystyki_zawodnika[0][1]))
+        self.okno_druzyny.ui.label_stracone_punkty_zawodnik.setText(str(statystyki_zawodnika[0][2]))
+        self.okno_druzyny.ui.label_rozegrane_mecze.setText(str(statystyki_zawodnika[0][3]))
 
     def przypisz_druzyne(self, numer, nazwa=None):
         if nazwa == None:
@@ -78,7 +112,7 @@ class Bracket(QtGui.QWidget):
         else:
             nazwa_druzyny_do_przypisania = nazwa
         if nazwa_druzyny_do_przypisania != "":
-            self.lista_druzyn_przypisana_do_przyciskow[numer] = self.lista_druzyn[nazwa_druzyny_do_przypisania]
+            self.lista_druzyn_przypisana_do_przyciskow[numer] = self.lista_druzyn[str(nazwa_druzyny_do_przypisania)]
             if nazwa == None:
                 self.odswiez_okno(numer)
         else:
@@ -86,13 +120,28 @@ class Bracket(QtGui.QWidget):
 
     def odswiez_okno(self, numer):
         druzyna = self.lista_druzyn_przypisana_do_przyciskow[numer]
+        self.druzyna_do_odswiezania_statow_zawodnikow = druzyna
         self.okno_druzyny.ui.label_2.setText(druzyna.getNazwa())
         
         self.okno_druzyny.ui.listWidget.clear()
         for member in druzyna.zawodnicy:
-            self.okno_druzyny.ui.listWidget.addItem(member)
+            do_dodania = member.getImie() + " " + member.getNazwisko()
+            self.okno_druzyny.ui.listWidget.addItem(do_dodania)
+
+        ##
+        statystyki_druzyny = self.baza.pobierz_statystyki_druzyny(druzyna.getNazwa(), self.id_turnieju)
+        self.okno_druzyny.ui.label_liczba_wygranych.setText(str(statystyki_druzyny[0][1]))
+        self.okno_druzyny.ui.label_liczba_przegranych.setText(str(statystyki_druzyny[0][2]))
+        self.okno_druzyny.ui.label_zdobyte_punkty.setText(str(statystyki_druzyny[0][3]))
+        self.okno_druzyny.ui.label_stracone_punkty.setText(str(statystyki_druzyny[0][4]))
+        ##
 
         self.odswiez_przyciski_na_drzewku(numer, druzyna)
+
+
+
+    def przekaz_baze(self, baza):
+        self.baza = baza
 
     def odswiez_przyciski_na_drzewku(self, numer, druzyna):
         self.list_of_buttons[numer].setText(druzyna.getNazwa())

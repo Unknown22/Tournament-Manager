@@ -9,9 +9,10 @@ class BazaMySQL(object):
         self.nazwa_bazy = nazwa_bazy
         self.plik_init = plik_init
         self.plik_procedury = plik_procedury
+        self.port = 3306
 
     def connect(self):
-        self.con = mdb.connect(self.adres, self.nazwa_uzytkownika, self.haslo, self.nazwa_bazy)
+        self.con = mdb.connect(self.adres, self.nazwa_uzytkownika, self.haslo, self.nazwa_bazy, self.port)
         self.c = self.con.cursor()
         self.executeScriptsFromFile(self.plik_init, self.plik_procedury)
         self.dodaj_konto('administrator', '1')
@@ -91,7 +92,22 @@ class BazaMySQL(object):
         rozkaz = "SELECT * FROM turniej"
         results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
         return results
+
+    def zwroc_druzyny_w_turnieju(self, id_turnieju):
+        rozkaz = "SELECT * FROM druzyna WHERE Id_turnieju = '%s';" % (id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def zwroc_zawodnikow_w_turnieju(self, id_druzyny):
+        rozkaz = "SELECT * FROM zawodnik WHERE Id_druzyny = '%s';" % (id_druzyny)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
             
+    def liczba_druzyn(self, id_turnieju):
+        rozkaz = "SELECT Ilosc_druzyn FROM turniej WHERE Id_turnieju = '%s';" % (id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
     def pokaz_uzytkownik(self, id_turnieju):
         rozkaz = "SELECT uzytkownik.Id_uzytkownika, Nick, Haslo, uzytkownik.Rodzaj_konta, Uprawnienia_organizatora FROM uzytkownik JOIN konto ON uzytkownik.Rodzaj_konta = konto.Rodzaj_konta JOIN `uzytkownik-turniej` ON uzytkownik.Id_uzytkownika = `uzytkownik-turniej`.`Id_uzytkownika` WHERE `uzytkownik-turniej`.Id_turnieju = %s " % (id_turnieju)
         results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
@@ -179,3 +195,13 @@ class BazaMySQL(object):
     def aktualizuj_statystyki_druzyny(self, id_druzyny, czy_wygrana, zdobyte, stracone):
         rozkaz = "CALL `update_team_statistics`('%s', '%s', '%s', '%s');" % (id_druzyny, czy_wygrana, zdobyte, stracone)
         self.wykonaj_rozkaz(rozkaz)
+
+    def pobierz_statystyki_druzyny(self, nazwa_druzyny, id_turnieju):
+        rozkaz = "SELECT * FROM statystyki_druzyny JOIN druzyna ON statystyki_druzyny.Id_druzyny = druzyna.Id_druzyny WHERE druzyna.Nazwa = '%s' AND druzyna.Id_turnieju = '%s';" % (nazwa_druzyny, id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def pobierz_statystyki_zawodnika(self, id_zawodnika):
+        rozkaz = "SELECT * FROM statystyki_zawodnika WHERE Id_zawodnika = '%s';" % (id_zawodnika)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results

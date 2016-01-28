@@ -32,7 +32,7 @@ class Ui_BracketWidget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 524, 473))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 524, 444))
         self.scrollAreaWidgetContents.setObjectName(_fromUtf8("scrollAreaWidgetContents"))
         self.gridLayout_3 = QtGui.QGridLayout(self.scrollAreaWidgetContents)
         self.gridLayout_3.setObjectName(_fromUtf8("gridLayout_3"))
@@ -40,11 +40,15 @@ class Ui_BracketWidget(object):
         self.gridLayout_2.setObjectName(_fromUtf8("gridLayout_2"))
         self.gridLayout_3.addLayout(self.gridLayout_2, 0, 0, 1, 1)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-        self.gridLayout.addWidget(self.scrollArea, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.scrollArea, 1, 0, 1, 1)
+        self.pushButton = QtGui.QPushButton(BracketWidget)
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.gridLayout.addWidget(self.pushButton, 0, 0, 1, 1)
 
         self.retranslateUi(BracketWidget)
         QtCore.QMetaObject.connectSlotsByName(BracketWidget)
 
     def retranslateUi(self, BracketWidget):
         BracketWidget.setWindowTitle(_translate("BracketWidget", "Form", None))
+        self.pushButton.setText(_translate("BracketWidget", "Następny mecz", None))
 

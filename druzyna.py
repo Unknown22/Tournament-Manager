@@ -8,7 +8,9 @@
         return self.nazwa
 
     def dodajZawodnika(self, zawodnik):
-        pass
+        self.zawodnicy.append(zawodnik)
 
-    def usunZawodnika(self, zawodnik):
-        pass
+    def usunZawodnika(self, id_zawodnika):
+        for x in self.zawodnicy:
+            if x.getId_zawodnika() == id_zawodnika:
+                self.zawodnicy.remove(x)

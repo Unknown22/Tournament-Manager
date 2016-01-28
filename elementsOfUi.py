@@ -2,7 +2,7 @@
 from PyQt4.QtGui import *
 
 from ui_files import Ui_BracketWidget, Ui_nowyTurniejForm, Ui_druzynyForm, Ui_ustawieniaForm, \
-    Ui_oknoDruzynyForm, Ui_zawodnicyForm
+    Ui_oknoDruzynyForm, Ui_zawodnicyForm, Ui_nastepnyMeczForm, Ui_wczytajZBazyForm
 
 class BracketWidget(QtGui.QWidget):
     def __init__(self, *args):
@@ -38,4 +38,16 @@ class ZawodnicyWidget(QtGui.QWidget):
     def __init__(self, *args):
         super(ZawodnicyWidget, self).__init__(*args)
         self.ui = Ui_zawodnicyForm()
+        self.ui.setupUi(self)
+
+class NastepnyMeczWidget(QtGui.QWidget):
+    def __init__(self, *args):
+        super(NastepnyMeczWidget, self).__init__(*args)
+        self.ui = Ui_nastepnyMeczForm()
+        self.ui.setupUi(self)
+
+class WczytajZBazyWidget(QtGui.QWidget):
+    def __init__(self, *args):
+        super(WczytajZBazyWidget, self).__init__(*args)
+        self.ui = Ui_wczytajZBazyForm()
         self.ui.setupUi(self)
