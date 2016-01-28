@@ -42,6 +42,7 @@ class Ui_wczytajZBazyForm(object):
         self.lineEdit_6.setObjectName(_fromUtf8("lineEdit_6"))
         self.gridLayout_3.addWidget(self.lineEdit_6, 7, 1, 1, 1)
         self.lineEdit_7 = QtGui.QLineEdit(self.groupBox_3)
+        self.lineEdit_7.setEchoMode(QtGui.QLineEdit.Password)
         self.lineEdit_7.setObjectName(_fromUtf8("lineEdit_7"))
         self.gridLayout_3.addWidget(self.lineEdit_7, 8, 1, 1, 1)
         self.pushButton = QtGui.QPushButton(self.groupBox_3)

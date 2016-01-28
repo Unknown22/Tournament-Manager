@@ -63,6 +63,15 @@ class BazaMySQL(object):
             except:
                 pass
     
+    def dodaj_mecz(self, id_meczu, wynik, data, id_turnieju, id_druzyny_1, id_druzyny_2):
+        rozkaz = "INSERT INTO `mecz` VALUES ('%s', '%s', '%s', '%s', '%s', '%s');" % (id_meczu, wynik, data, id_turnieju, id_druzyny_1, id_druzyny_2)
+        self.wykonaj_rozkaz(rozkaz)
+
+    def pokaz_mecz(self, id_meczu):
+        rozkaz = "SELECT * FROM mecz WHERE Id_meczu='%s';" % (id_meczu)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
     def dodaj_turniej(self, id_turnieju, ilosc_druzyn, czy_posiada_faze_grupowa, data_rozpoczecia):
         rozkaz = "INSERT INTO `turniej` VALUES (%s, %s, %s, '%s');"  % (id_turnieju, ilosc_druzyn, czy_posiada_faze_grupowa, data_rozpoczecia)
         self.wykonaj_rozkaz(rozkaz)
@@ -90,6 +99,11 @@ class BazaMySQL(object):
 
     def szukaj_nastepne_id_turnieju(self):
         rozkaz = "SELECT * FROM turniej"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+    
+    def szukaj_nastepne_id_meczu(self):
+        rozkaz = "SELECT * FROM mecz"
         results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
         return results
 
@@ -203,5 +217,28 @@ class BazaMySQL(object):
 
     def pobierz_statystyki_zawodnika(self, id_zawodnika):
         rozkaz = "SELECT * FROM statystyki_zawodnika WHERE Id_zawodnika = '%s';" % (id_zawodnika)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def sprawdz_admina(self, id_turnieju, nick, haslo):
+        rozkaz = "SELECT uzytkownik.Nick, uzytkownik.haslo FROM uzytkownik JOIN `uzytkownik-turniej` ON `uzytkownik`.`Id_uzytkownika`=`uzytkownik-turniej`.`Id_uzytkownika` JOIN turniej ON turniej.Id_turnieju = `uzytkownik-turniej`.`Id_turnieju` WHERE turniej.Id_turnieju = '%s';" % (id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        if results[0][0] == nick and results[0][1] == haslo:
+            return True
+        else:
+            return False
+
+    def najwiecej_wygranych(self):
+        rozkaz = "SELECT druzyna.Nazwa, statystyki_druzyny.Ilosc_wygranych FROM druzyna JOIN statystyki_druzyny ON statystyki_druzyny.Id_druzyny=druzyna.Id_druzyny WHERE Ilosc_wygranych= (SELECT MAX(Ilosc_wygranych) FROM statystyki_druzyny);"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def najwiecej_zdobytych_punktow(self):
+        rozkaz = "SELECT druzyna.Nazwa, statystyki_druzyny.Zdobyte_gole_pkt_kille FROM druzyna JOIN statystyki_druzyny ON statystyki_druzyny.Id_druzyny=druzyna.Id_druzyny WHERE Zdobyte_gole_pkt_kille= (SELECT MAX(Zdobyte_gole_pkt_kille) FROM statystyki_druzyny);"
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
+
+    def najwiecej_straconych_punktow(self):
+        rozkaz = "SELECT druzyna.Nazwa, statystyki_druzyny.Stracone_gole_pkt_ilosc_zginiec FROM druzyna JOIN statystyki_druzyny ON statystyki_druzyny.Id_druzyny=druzyna.Id_druzyny WHERE Stracone_gole_pkt_ilosc_zginiec= (SELECT MAX(Stracone_gole_pkt_ilosc_zginiec) FROM statystyki_druzyny);"
         results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
         return results

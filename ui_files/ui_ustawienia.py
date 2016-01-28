@@ -25,23 +25,27 @@ except AttributeError:
 class Ui_ustawieniaForm(object):
     def setupUi(self, ustawieniaForm):
         ustawieniaForm.setObjectName(_fromUtf8("ustawieniaForm"))
-        ustawieniaForm.resize(206, 76)
+        ustawieniaForm.resize(192, 105)
         self.gridLayout = QtGui.QGridLayout(ustawieniaForm)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
-        self.pushButton = QtGui.QPushButton(ustawieniaForm)
-        self.pushButton.setObjectName(_fromUtf8("pushButton"))
-        self.gridLayout.addWidget(self.pushButton, 0, 0, 1, 1)
-        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
-        self.gridLayout.addItem(spacerItem, 2, 0, 1, 1)
         self.pushButton_2 = QtGui.QPushButton(ustawieniaForm)
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.gridLayout.addWidget(self.pushButton_2, 1, 0, 1, 1)
+        spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem, 3, 0, 1, 1)
+        self.pushButton = QtGui.QPushButton(ustawieniaForm)
+        self.pushButton.setObjectName(_fromUtf8("pushButton"))
+        self.gridLayout.addWidget(self.pushButton, 0, 0, 1, 1)
+        self.pushButton_3 = QtGui.QPushButton(ustawieniaForm)
+        self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
+        self.gridLayout.addWidget(self.pushButton_3, 2, 0, 1, 1)
 
         self.retranslateUi(ustawieniaForm)
         QtCore.QMetaObject.connectSlotsByName(ustawieniaForm)
 
     def retranslateUi(self, ustawieniaForm):
         ustawieniaForm.setWindowTitle(_translate("ustawieniaForm", "Ustawienia", None))
-        self.pushButton.setText(_translate("ustawieniaForm", "Drużyny", None))
         self.pushButton_2.setText(_translate("ustawieniaForm", "Zawodnicy", None))
+        self.pushButton.setText(_translate("ustawieniaForm", "Drużyny", None))
+        self.pushButton_3.setText(_translate("ustawieniaForm", "TOP Drużyny", None))
 

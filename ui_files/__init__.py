@@ -7,3 +7,4 @@ from ui_okno_druzyny import Ui_oknoDruzynyForm
 from ui_zawodnicy import Ui_zawodnicyForm
 from ui_nastepny_mecz import Ui_nastepnyMeczForm
 from ui_wczytaj_z_bazy import Ui_wczytajZBazyForm
+from ui_najlepsi import Ui_najlepsiForm

@@ -60,34 +60,46 @@ class TournamentManager(QtGui.QMainWindow):
         nazwa_bazy = str(self.wczytaj_z_bazy_okno.ui.lineEdit_4.text())
         id_turnieju = str(self.wczytaj_z_bazy_okno.ui.lineEdit_5.text())
         login = str(self.wczytaj_z_bazy_okno.ui.lineEdit_6.text())
-        haslo = str(self.wczytaj_z_bazy_okno.ui.lineEdit_7.text())
+        haslo_admina = str(self.wczytaj_z_bazy_okno.ui.lineEdit_7.text())
 
         baza = BazaMySQL(adres, nazwa_uzytkownika, haslo, nazwa_bazy, "tournament_manager_baza_init.sql", "procedury.sql")
         baza.connect()
 
-        liczba_druzyn = baza.liczba_druzyn(id_turnieju)[0][0]
-        self.utworz_turniej(liczba_druzyn, id_turnieju, baza)
+        if baza.sprawdz_admina(id_turnieju, login, haslo_admina) == True:
+            liczba_druzyn = baza.liczba_druzyn(id_turnieju)[0][0]
+            self.utworz_turniej(liczba_druzyn, id_turnieju, baza)
         
-        lista_druzyn = baza.zwroc_druzyny_w_turnieju(id_turnieju)
+            lista_druzyn = baza.zwroc_druzyny_w_turnieju(id_turnieju)
 
-        self.otworz_druzyny()
-        self.druzyny.close()
+            self.otworz_druzyny()
+            self.druzyny.close()
 
-        for row in lista_druzyn:
-            self.dodaj_druzyne(row[1])
+            for row in lista_druzyn:
+                self.dodaj_druzyne(row[1])
 
-            lista_zawodnikow = baza.zwroc_zawodnikow_w_turnieju(row[0])
-            for row_2 in lista_zawodnikow:
-                self.dodaj_zawodnika(row_2[1], row_2[2], row_2[3], row[1], row_2[0]) 
+                lista_zawodnikow = baza.zwroc_zawodnikow_w_turnieju(row[0])
+                for row_2 in lista_zawodnikow:
+                    self.dodaj_zawodnika(row_2[1], row_2[2], row_2[3], row[1], row_2[0]) 
+        else:
+            info_window = QMessageBox.information(self, "Info", "Niepoprane dane administratora dla podanego turnieju. Brak uprawnień do edycji.")
 
-
-        print "Polaczenie udane"
 
     def nowy_turniej(self):
         self.nowy_turniej = NowyTurniejWidget()
 
         QtCore.QObject.connect(self.nowy_turniej.ui.pushButton, QtCore.SIGNAL("clicked()"), self.utworz_turniej)
 
+        self.nowy_turniej.ui.radioButton_4.setVisible(False)
+        self.nowy_turniej.ui.groupBox_4.setVisible(False)
+        self.nowy_turniej.ui.radioButton_3.setChecked(True)
+        self.nowy_turniej.ui.radioButton_3.setVisible(False)
+
+        self.nowy_turniej.ui.label_2.setVisible(False)
+        self.nowy_turniej.ui.radioButton.setVisible(False)
+        self.nowy_turniej.ui.radioButton_2.setVisible(False)
+        self.nowy_turniej.ui.radioButton_2.setChecked(True)
+
+        self.nowy_turniej.resize(300,200)
 
         self.nowy_turniej.show()
 
@@ -161,7 +173,7 @@ class TournamentManager(QtGui.QMainWindow):
             self.id_turnieju = id_turnieju
             self.baza = baza_przekazana
 
-        
+        info_window = QMessageBox.information(self, "Info", "Id turnieju: " + str(self.id_turnieju))
         
 
         if self.number_of_teams != None:
@@ -187,8 +199,29 @@ class TournamentManager(QtGui.QMainWindow):
         
         QtCore.QObject.connect(self.ustawienia.ui.pushButton, QtCore.SIGNAL("clicked()"), self.otworz_druzyny)
         QtCore.QObject.connect(self.ustawienia.ui.pushButton_2, QtCore.SIGNAL("clicked()"), self.otworz_zawodnicy)
+        QtCore.QObject.connect(self.ustawienia.ui.pushButton_3, QtCore.SIGNAL("clicked()"), self.otworz_najlepsi)
 
         self.ustawienia.show()
+
+    def otworz_najlepsi(self):
+        self.najlepsi = NajlepsiWidget()
+
+        najwiecej_wygranych = self.baza.najwiecej_wygranych()
+
+        self.najlepsi.ui.label_11.setText(str(najwiecej_wygranych[0][0]))
+        self.najlepsi.ui.label_12.setText(str(najwiecej_wygranych[0][1]))
+
+        najwiecej_zdobytych_punktow = self.baza.najwiecej_zdobytych_punktow()
+
+        self.najlepsi.ui.label_4.setText(str(najwiecej_zdobytych_punktow[0][0]))
+        self.najlepsi.ui.label_5.setText(str(najwiecej_zdobytych_punktow[0][1]))
+        
+        najwiecej_straconych_punktow = self.baza.najwiecej_straconych_punktow()
+
+        self.najlepsi.ui.label_6.setText(str(najwiecej_straconych_punktow[0][0]))
+        self.najlepsi.ui.label_7.setText(str(najwiecej_straconych_punktow[0][1]))
+
+        self.najlepsi.show()
 
     def otworz_zawodnicy(self):
         self.zawodnicy = ZawodnicyWidget()

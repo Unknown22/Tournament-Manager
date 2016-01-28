@@ -6,22 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>206</width>
-    <height>76</height>
+    <width>192</width>
+    <height>105</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Ustawienia</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QPushButton" name="pushButton">
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushButton_2">
      <property name="text">
-      <string>Drużyny</string>
+      <string>Zawodnicy</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -34,10 +34,17 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0">
-    <widget class="QPushButton" name="pushButton_2">
+   <item row="0" column="0">
+    <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>Zawodnicy</string>
+      <string>Drużyny</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="text">
+      <string>TOP Drużyny</string>
      </property>
     </widget>
    </item>

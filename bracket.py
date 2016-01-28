@@ -3,6 +3,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 from random import randint
+import time
 
 from elementsOfUi import *
 
@@ -19,6 +20,9 @@ class Bracket(QtGui.QWidget):
         self.list_of_teams_in_groupbox = []
         self.list_of_buttons = {}
         self.lista_druzyn_przypisana_do_przyciskow = {}
+
+        self.nastepny_mecz_numer = 0
+        self.nastepny_numer_groupboxa = 0
 
         if team_number != 0:
             result = team_number
@@ -41,6 +45,9 @@ class Bracket(QtGui.QWidget):
             self.ui.ui.gridLayout_2.addWidget(groupBox, 0, x)
 
         self.add_teams_button()
+
+        self.suma_przyciskow = self.list_of_teams_in_groupbox[self.nastepny_numer_groupboxa]
+
         self.connect_signals()
 
     def add_teams_button(self):
@@ -63,9 +70,68 @@ class Bracket(QtGui.QWidget):
             QtCore.QObject.connect(self.list_of_buttons[button_number], QtCore.SIGNAL("clicked()"), lambda button_number = button_number: self.otworz_okno_druzyny(button_number))
 
     def otworz_nastepny_mecz(self):
-        self.nastepny_mecz = NastepnyMeczWidget()
+        liczba_przyciskow = len(self.list_of_buttons)
+        try:
+            self.nastepny_mecz = NastepnyMeczWidget()
+            QtCore.QObject.connect(self.nastepny_mecz.ui.pushButton, QtCore.SIGNAL("clicked()"), self.aktualizuj_staty_teamu)
+            if self.nastepny_mecz_numer + 1 < liczba_przyciskow:
+                self.team1 = self.lista_druzyn_przypisana_do_przyciskow[self.nastepny_mecz_numer].getNazwa()
+                self.team2 = self.lista_druzyn_przypisana_do_przyciskow[self.nastepny_mecz_numer+1].getNazwa()
+                self.nastepny_mecz.ui.label.setText(self.team1)
+                self.nastepny_mecz.ui.label_2.setText(self.team2)
+                self.nastepny_mecz.show()
 
-        self.nastepny_mecz.show()
+            else:
+                info_window = QMessageBox.information(self, "Info", "Wygrywa: " + str(self.lista_druzyn_przypisana_do_przyciskow[self.nastepny_mecz_numer].getNazwa())) 
+
+            if self.nastepny_mecz_numer + 1 < self.suma_przyciskow:
+                self.nastepny_mecz_numer = self.nastepny_mecz_numer + 2
+                if self.nastepny_mecz_numer >= self.suma_przyciskow:
+                    self.nastepny_numer_groupboxa = self.nastepny_numer_groupboxa + 1
+                    self.suma_przyciskow = self.suma_przyciskow + self.list_of_teams_in_groupbox[self.nastepny_numer_groupboxa]
+            else:
+                self.nastepny_mecz_numer = self.nastepny_mecz_numer + 1
+                self.nastepny_numer_groupboxa = self.nastepny_numer_groupboxa + 1
+                self.suma_przyciskow = self.suma_przyciskow + self.list_of_teams_in_groupbox[self.nastepny_numer_groupboxa]
+        except:
+            pass
+
+    def aktualizuj_staty_teamu(self):
+        id_druzyny1 = self.baza.znajdz_id_druzyny_po_nazwie(self.team1, self.id_turnieju)
+        zdobyte = int(str(self.nastepny_mecz.ui.lineEdit.text()))
+        stracone = int(str(self.nastepny_mecz.ui.lineEdit_2.text()))
+        if zdobyte > stracone:
+            czy_wygrana = 1
+        else:
+            czy_wygrana = 0
+
+        self.baza.aktualizuj_statystyki_druzyny(id_druzyny1[0][0], czy_wygrana, zdobyte, stracone)
+
+        id_druzyny2 = self.baza.znajdz_id_druzyny_po_nazwie(self.team2, self.id_turnieju)
+        zdobyte = int(str(self.nastepny_mecz.ui.lineEdit_2.text()))
+        stracone = int(str(self.nastepny_mecz.ui.lineEdit.text()))
+        if zdobyte > stracone:
+            czy_wygrana = 1
+        else:
+            czy_wygrana = 0
+        self.baza.aktualizuj_statystyki_druzyny(id_druzyny2[0][0], czy_wygrana, zdobyte, stracone)
+
+
+        spis_meczy_w_bazie = self.baza.szukaj_nastepne_id_meczu()
+        try:
+            najwiekszy = spis_meczy_w_bazie[0][0]
+        except:
+            najwiekszy = 0
+        for row in spis_meczy_w_bazie:
+            if row[0] > najwiekszy:
+                najwiekszy = row[0]
+
+        id_meczu = najwiekszy + 1
+        wynik = str(stracone) + ":" + str(zdobyte)
+        data = time.strftime("%Y-%m-%d")
+        self.baza.dodaj_mecz(id_meczu, wynik, data, self.id_turnieju, id_druzyny1[0][0], id_druzyny2[0][0])
+        
+        self.nastepny_mecz.close()
 
     def przekaz_id_turnieju(self, id):
         self.id_turnieju = id
@@ -89,6 +155,8 @@ class Bracket(QtGui.QWidget):
         QtCore.QObject.connect(self.okno_druzyny.ui.pushButton, QtCore.SIGNAL("clicked()"), lambda numer = numer: self.przypisz_druzyne(numer))
         self.okno_druzyny.ui.listWidget.currentItemChanged.connect(self.odswiez_staty_zawodnika)
         
+        self.okno_druzyny.ui.groupBox_3.setVisible(False)
+        self.okno_druzyny.resize(250,330)
 
         self.okno_druzyny.show()
 
@@ -105,6 +173,7 @@ class Bracket(QtGui.QWidget):
         self.okno_druzyny.ui.label_zdobyte_punkty_zawodnik.setText(str(statystyki_zawodnika[0][1]))
         self.okno_druzyny.ui.label_stracone_punkty_zawodnik.setText(str(statystyki_zawodnika[0][2]))
         self.okno_druzyny.ui.label_rozegrane_mecze.setText(str(statystyki_zawodnika[0][3]))
+        self.okno_druzyny.ui.groupBox_3.setVisible(False)
 
     def przypisz_druzyne(self, numer, nazwa=None):
         if nazwa == None:

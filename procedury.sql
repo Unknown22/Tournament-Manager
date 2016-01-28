@@ -1,5 +1,5 @@
 #
-CREATE DEFINER=`tournament`@`%` PROCEDURE `update_player_statistics` (`id_zaw` INT(10), `zdob_gole` INT(10), `str_gole` INT(10))  begin
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_player_statistics` (`id_zaw` INT(10), `zdob_gole` INT(10), `str_gole` INT(10))  begin
 	set @zaw=(select id_zawodnika from statystyki_zawodnika where id_zawodnika=id_zaw);
 	if @zaw is not null then
 		update statystyki_zawodnika set Rozegrane_mecze=Rozegrane_mecze+1 where id_zawodnika=@zaw;
@@ -8,7 +8,7 @@ CREATE DEFINER=`tournament`@`%` PROCEDURE `update_player_statistics` (`id_zaw` I
 	end if;
 end;
 #
-CREATE DEFINER=`tournament`@`%` PROCEDURE `update_team_statistics` (`id_druz` INT(10), `czy_wygrana` INT(1), `zdob_gole` INT(10), `str_gole` INT(10))  begin
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_team_statistics` (`id_druz` INT(10), `czy_wygrana` INT(1), `zdob_gole` INT(10), `str_gole` INT(10))  begin
 	set @druz=(select id_druzyny from statystyki_druzyny where id_druzyny=id_druz);
 	if @druz is not null then
 		if czy_wygrana=1 then
