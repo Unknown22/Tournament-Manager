@@ -61,7 +61,6 @@
    <addaction name="actionZapisz_screenshot_drzewa_turniejowego"/>
    <addaction name="separator"/>
    <addaction name="actionUstawienia"/>
-   <addaction name="actionPomoc"/>
   </widget>
   <action name="actionUstawienia">
    <property name="icon">

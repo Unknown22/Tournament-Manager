@@ -95,7 +95,6 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionZapisz_screenshot_drzewa_turniejowego)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionUstawienia)
-        self.toolBar.addAction(self.actionPomoc)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
