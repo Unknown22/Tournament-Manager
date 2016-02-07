@@ -81,7 +81,7 @@ class TournamentManager(QtGui.QMainWindow):
                 for row_2 in lista_zawodnikow:
                     self.dodaj_zawodnika(row_2[1], row_2[2], row_2[3], row[1], row_2[0]) 
         else:
-            info_window = QMessageBox.information(self, "Info", "Niepoprane dane administratora dla podanego turnieju. Brak uprawnień do edycji.")
+            info_window = QMessageBox.information(self, "Info", "Niepoprane dane administratora dla podanego turnieju. Brak uprawnien do edycji.")
 
 
     def nowy_turniej(self):
@@ -311,10 +311,16 @@ class TournamentManager(QtGui.QMainWindow):
         QtCore.QObject.connect(self.druzyny.ui.pushButton_dodaj, QtCore.SIGNAL("clicked()"), self.dodaj_druzyne)
         QtCore.QObject.connect(self.druzyny.ui.pushButton_usun, QtCore.SIGNAL("clicked()"), self.usun_druzyne)
         QtCore.QObject.connect(self.druzyny.ui.pushButton_losuj_drzewko, QtCore.SIGNAL("clicked()"), self.losuj_drzewko)
+        QtCore.QObject.connect(self.druzyny.ui.pushButton_logo, QtCore.SIGNAL("clicked()"), self.sciezka_do_logo)
 
         self.odswiez_liste_druzyn()
 
         self.druzyny.show()
+
+    def sciezka_do_logo(self):
+        file_name = QtGui.QFileDialog.getOpenFileName(self, "Wybierz logo", "", "Image (*.jpg)")
+
+        self.druzyny.ui.label_4.setText(file_name)
 
     def dodaj_druzyne(self, nazwa_dr = None):
         if nazwa_dr == None:
@@ -343,6 +349,12 @@ class TournamentManager(QtGui.QMainWindow):
             
             id_turnieju = self.id_turnieju
             logo = None
+            if self.druzyny.ui.label_4.text() != "...":
+                fin = open(self.druzyny.ui.label_4.text(), 'rb')
+                logo = fin.read()
+                fin.close()
+                self.druzyny.ui.label_4.setText("...")
+
             if nazwa_dr == None:
                 self.baza.dodaj_druzyna(id_druzyny, nazwa_druzyny, ilosc_zawodnikow, id_turnieju, logo)
         else:
@@ -350,7 +362,7 @@ class TournamentManager(QtGui.QMainWindow):
 
     def usun_druzyne(self):
         druzyna_do_usuniecia = self.druzyny.ui.listWidget.currentItem().text()
-        del self.lista_druzyn[druzyna_do_usuniecia]
+        del self.lista_druzyn[str(druzyna_do_usuniecia)]
 
         self.baza.usun_druzyna(druzyna_do_usuniecia, self.id_turnieju)
 

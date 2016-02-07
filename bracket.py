@@ -197,7 +197,17 @@ class Bracket(QtGui.QWidget):
             do_dodania = member.getImie() + " " + member.getNazwisko()
             self.okno_druzyny.ui.listWidget.addItem(do_dodania)
 
+
         ##
+        logo = self.baza.pobierz_logo_druzyny(druzyna.getNazwa(), self.id_turnieju)
+        if logo != None:
+            fout = open('temp_logo.jpg', 'wb')
+            fout.write(logo[0][0])
+            fout.close()
+            self.okno_druzyny.ui.label_logo.setGeometry(10, 10, 50, 50)
+            logoPixmap = QtGui.QPixmap('temp_logo.jpg')
+            self.okno_druzyny.ui.label_logo.setPixmap(logoPixmap)
+
         statystyki_druzyny = self.baza.pobierz_statystyki_druzyny(druzyna.getNazwa(), self.id_turnieju)
         self.okno_druzyny.ui.label_liczba_wygranych.setText(str(statystyki_druzyny[0][1]))
         self.okno_druzyny.ui.label_liczba_przegranych.setText(str(statystyki_druzyny[0][2]))
@@ -217,9 +227,12 @@ class Bracket(QtGui.QWidget):
 
     def losuj_drzewko(self):
         random = randint(0, self.liczba_przyciskow_na_starcie-1)
-
-        for nazwa, druzyna in self.lista_druzyn.items():
-            while self.list_of_buttons[random].text() != "...":
-                random = randint(0, self.liczba_przyciskow_na_starcie-1)
-            self.przypisz_druzyne(random, nazwa)
-            self.odswiez_przyciski_na_drzewku(random, druzyna)
+        liczba_druzyn = len(self.lista_druzyn)
+        if liczba_druzyn == self.liczba_przyciskow_na_starcie:
+            for nazwa, druzyna in self.lista_druzyn.items():
+                while self.list_of_buttons[random].text() != "...":
+                    random = randint(0, self.liczba_przyciskow_na_starcie-1)
+                self.przypisz_druzyne(random, nazwa)
+                self.odswiez_przyciski_na_drzewku(random, druzyna)
+        else:
+            error_window = QMessageBox.warning(self, "Blad z liczba druzyn", "Niepoprawna liczba druzyn. Dodaj brakujace albo usun nadmiarowe.")

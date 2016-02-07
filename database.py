@@ -169,7 +169,7 @@ class BazaMySQL(object):
         if logo == None:
             rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju) 
         else:
-            rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '%s');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju, logo)
+            rozkaz = "INSERT INTO `druzyna` (`Id_druzyny`, `Nazwa`, `Ilosc_zawodnikow`, `Id_turnieju`, `Logo`) VALUES ('%s', '%s', '%s', '%s', '%s');" % (id_druzyny, nazwa, ilosc_zawodnikow, id_turnieju, mdb.escape_string(logo))
         self.wykonaj_rozkaz(rozkaz)
 
     def usun_druzyna(self, nazwa, id_turnieju):
@@ -209,6 +209,11 @@ class BazaMySQL(object):
     def aktualizuj_statystyki_druzyny(self, id_druzyny, czy_wygrana, zdobyte, stracone):
         rozkaz = "CALL `update_team_statistics`('%s', '%s', '%s', '%s');" % (id_druzyny, czy_wygrana, zdobyte, stracone)
         self.wykonaj_rozkaz(rozkaz)
+
+    def pobierz_logo_druzyny(self, nazwa_druzyny, id_turnieju):
+        rozkaz = "SELECT Logo FROM druzyna WHERE Nazwa = '%s' AND Id_turnieju = '%s';" % (nazwa_druzyny, id_turnieju)
+        results = self.wykonaj_rozkaz_i_zwroc(rozkaz)
+        return results
 
     def pobierz_statystyki_druzyny(self, nazwa_druzyny, id_turnieju):
         rozkaz = "SELECT * FROM statystyki_druzyny JOIN druzyna ON statystyki_druzyny.Id_druzyny = druzyna.Id_druzyny WHERE druzyna.Nazwa = '%s' AND druzyna.Id_turnieju = '%s';" % (nazwa_druzyny, id_turnieju)
